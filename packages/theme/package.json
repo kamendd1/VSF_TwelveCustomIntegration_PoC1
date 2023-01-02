@@ -1,5 +1,5 @@
 {
-  "name": "@vue-storefront/__replace_me__-theme",
+  "name": "@vue-storefront/vsftwelvepoc1-theme",
   "version": "0.0.1",
   "private": true,
   "engines": {
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@storefront-ui/vue": "0.11.4",
-    "@vue-storefront/__replace_me__": "0.0.1",
+    "@vue-storefront/vsftwelvepoc1": "0.0.1",
     "@vue-storefront/middleware": "~2.5.4",
     "@vue-storefront/nuxt": "~2.5.4",
     "@vue-storefront/nuxt-theme": "~2.5.4",
