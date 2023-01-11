@@ -3,40 +3,30 @@
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
-  "main": "./lib/index.js",
-  "exports": {
-    ".": "./lib/index.js",
-    "./nuxt": "./nuxt/index.js",
-    "./package.json": "./package.json"
-  },
+  "main": "lib/index.cjs.js",
+  "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "yarn build:clear && yarn build:package && yarn build:types",
-    "build:clear": "rimraf lib",
-    "build:package": "node ../../scripts/build --file=src/index.ts",
-    "build:types": "tsc --emitDeclarationOnly",
-    "dev": "yarn build:package --watch",
-    "precommit": "lint-staged",
-    "prepublish": "yarn build",
+    "build": "rimraf lib && rollup -c",
+    "dev": "rollup -c -w",
     "test": "jest",
-    "update:check": "ncu",
-    "update:update": "ncu -u"
+    "preversion": "yarn build"
   },
   "dependencies": {
     "@vue-storefront/vsftwelvepoc1-api": "0.0.1",
-    "@vue-storefront/core": "~2.5.4"
+    "@vue-storefront/core": "~2.7.5"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "rollup-plugin-typescript2": "^0.30.0"
+    "jsdom": "^16.6.0",
+    "jsdom-global": "^3.0.2"
   },
   "peerDependencies": {
     "@nuxtjs/composition-api": "^0.29.3"
   },
-  "files": [
-    "lib/**/*"
-  ],
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=16.x"
   }
 }
