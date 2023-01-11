@@ -77,9 +77,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    ['nuxt-i18n', {
-      baseUrl: process.env.BASE_URL || 'http://localhost:3000'
-    }],
+    '@nuxtjs/i18n',
     'cookie-universal-nuxt',
     'vue-scrollto/nuxt',
     '@vue-storefront/middleware/nuxt'
@@ -125,14 +123,20 @@ export default {
   },
 
   styleResources: {
-    scss: [require.resolve('@storefront-ui/shared/styles/_helpers.scss', { paths: [process.cwd()] })]
+    scss: [
+      require.resolve('@storefront-ui/shared/styles/_helpers.scss', {
+        paths: [process.cwd()]
+      })
+    ]
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: [
-      'vee-validate/dist/rules'
-    ],
+    extractCSS: true,
+    babel: {
+      exclude: [/\bcore-js\b/, /\bwebpack\/buildin\b/]
+    },
+    transpile: ['vee-validate/dist/rules'],
     plugins: [
       new webpack.DefinePlugin({
         'process.VERSION': JSON.stringify({
