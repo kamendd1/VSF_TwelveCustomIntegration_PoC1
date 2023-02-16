@@ -1,6 +1,16 @@
-export type TODO = unknown;
+import { AxiosInstance } from "axios";
 
-export type Setttings = TODO;
+export type TODO = unknown;
+export type TODO2 = any;
+
+export type Wishlist = TODO2;
+export type WishlistItem = TODO2;
+
+export type Setttings = {
+    apiClient: AxiosInstance,
+    apiConfig: { baseUrl: string; }
+};
+
 
 export type Endpoints = TODO;
 
@@ -24,9 +34,18 @@ export type OrderItem = TODO;
 
 export type PasswordResetResult = TODO;
 
-export type Product = TODO;
+export type Product = {
+    id: string;
+    name: string;
+    title: string;
+    imgUrl: string;
+    slug: string;
+    price: { regular: number };
+    rating: { max: number, score: number },
+}
 
-export type ProductFilter = TODO;
+
+export type ProductFilter = TODO2;
 
 export type Review = TODO;
 
@@ -54,6 +73,4 @@ export type ShippingProvider = TODO;
 
 export type Store = TODO;
 
-export type Wishlist = TODO;
 
-export type WishlistItem = TODO;
