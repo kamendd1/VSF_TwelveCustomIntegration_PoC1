@@ -298,18 +298,18 @@ EXTRACTION OF BROWSER CONSOLE LOGGINGS:
         },
         {
           name: 'Category',
-          value: 'Pants'
+          value: 'Beers'
         },
         {
-          name: 'Material',
-          value: 'Cotton'
+          name: 'Flavour',
+          value: 'Bitter sweet'
         },
         {
           name: 'Country',
-          value: 'Germany'
+          value: 'Beeristan'
         }
       ],
-      description: 'Find stunning women cocktail and party dresses. Stand out in lace and metallic cocktail dresses and party dresses from all your favorite brands.',
+      description: this.product?.title ?? 'TODO 1434',
       detailsIsActive: false,
       brand:
           'Brand name is the perfect pairing of quality and design. This label creates major everyday vibes with its collection of modern brooches, silver and gold jewellery, or clips it back with hair accessories in geo styles.',
@@ -328,7 +328,7 @@ EXTRACTION OF BROWSER CONSOLE LOGGINGS:
           }
         },
         {
-          text: 'Pants',
+          text: 'Beers',
           route: {
             link: '#'
           }

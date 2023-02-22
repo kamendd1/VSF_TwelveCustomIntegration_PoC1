@@ -30,8 +30,21 @@ export type Product = {
 export type ProductFilter = TODO2;
 
 
-export type Cart = TODO2;
-export type CartItem = TODO2;
+export type Cart = {
+    cartItems: CartItem[];
+};
+
+export type CartItem = {
+    id: string;
+    name: string;
+    productId: string;
+    quantity: number; /* TODO: use ASF Quantity definition */
+    imgUrl: string;    
+    price: { 
+        regular: number, 
+        special?: number 
+    };
+};
 
 export type Wishlist = TODO2;
 export type WishlistItem = TODO2;
