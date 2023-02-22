@@ -1,5 +1,5 @@
 <template>
-  <div id="product">
+  <div id="product" v-if="product">
     <SfBreadcrumbs
       class="breadcrumbs desktop-only"
       :breadcrumbs="breadcrumbs"
@@ -175,15 +175,47 @@ export default {
   transition: 'fade',
   setup() {
     const qty = ref(1);
-    const route = useRoute();
+    const route = useRoute(); 
     const router = useRouter();
-    const { products, search } = useProduct('products');
+    const { products, search: searchProducts } = useProduct('products');
     const { products: relatedProducts, search: searchRelatedProducts, loading: relatedLoading } = useProduct('relatedProducts');
     const { addItem, loading } = useCart();
     const { reviews: productReviews, search: searchReviews } = useReview('productReviews');
 
     const id = computed(() => route.value.params.id);
-    const product = computed(() => productGetters.getFiltered(products.value, { master: true, attributes: route.value.query })[0]);
+
+    const product = computed(() => {
+      console.info(`%c Entering Product.vue.product (computed)`, 'color:fuchsia; font-weight:bold');
+      const foundProducts = productGetters.getFiltered(products.value, { master: true, attributes: route.value });
+      if (!foundProducts.length) {
+        console.warn(`%c      No products found!?. Returning null`, 'color:fuchsia');
+        //TODO: had to implement a v-if on the top element (line 2 ↑) because of the following:
+        //      On the "very first time"" this Product.vue page is requested it crashes due to product not being there yet.
+        //      With "very first time" is meant: when opening the shop from scratch (Ctrl+F5 in browser), and clicking on the Product tile.
+        //      Subsequent clicks don't expose this behavior. Inspecting the console logging indicates that it seems like
+        //      some race condition is going on: results from useProduct.productsSearch(...) are not yet returned (because log line
+        //        "filtering on params.id" is not yet outputted
+        //      while Product.vue is already calling productGetters.getName(...).
+/*
+EXTRACTION OF BROWSER CONSOLE LOGGINGS:         
+15:05:53.931 index.ts?58f8:10           Entering: useProduct.productSearch with params {id: 'e1b7be24-0ef0-4ecf-aef4-d1ffc55a15f3'}
+15:05:53.931 index.ts?58f8:11             calling:  context.$vsftwelvepoc1.api.fetchProducts(params)
+15:05:53.935 Product.vue?60a6:189       Entering Product.vue.product (computed)
+15:05:53.935 productGetters.ts?950b:54  Entering productGetters.getFiltered. Inbound products count: 0  {master: true, attributes: {…}}
+15:05:53.935 productGetters.ts?950b:59        Filtering on id = e1b7be24-0ef0-4ecf-aef4-d1ffc55a15f3 
+15:05:53.935 productGetters.ts?950b:67        Outbound filteredProducts count: 0 
+15:05:53.936 Product.vue?60a6:192       No products found!?. Returning null                                                                                                  
+15:05:53.937 client.js?06a0:102 TypeError: Cannot read properties of null (reading 'name')          ←   ERROR IS HERE ←
+                                           at Object.getName (productGetters.ts?950b:6:1)
+15:05:54.122 index.ts?58f8:16             filtering on params.id:  true
+15:05:54.122 index.ts?58f8:21           product to return:  1         
+*/
+        return null;
+      }
+        
+      return foundProducts[0]
+    });
+
     const options = computed(() => productGetters.getAttributes(products.value, ['color', 'size']));
     const configuration = computed(() => productGetters.getAttributes(product.value, ['color', 'size']));
     const categories = computed(() => productGetters.getCategoryIds(product.value));
@@ -191,15 +223,17 @@ export default {
 
     // TODO: Breadcrumbs are temporary disabled because productGetters return undefined. We have a mocks in data
     // const breadcrumbs = computed(() => productGetters.getBreadcrumbs ? productGetters.getBreadcrumbs(product.value) : props.fallbackBreadcrumbs);
-    const productGallery = computed(() => productGetters.getGallery(product.value).map(img => ({
-      mobile: { url: addBasePath(img.small) },
-      desktop: { url: addBasePath(img.normal) },
-      big: { url: addBasePath(img.big) },
-      alt: product.value._name || product.value.name
-    })));
+    const productGallery = computed(() => productGetters.getGallery(product.value)
+      .map(img => ({
+          mobile: { url: addBasePath(img.small) },
+          desktop: { url: addBasePath(img.normal) },
+          big: { url: addBasePath(img.big) },
+        alt: product.value?._name || product.value?.name
+        })
+      ));
 
     onSSR(async () => {
-      await search({ id: id.value });
+      await searchProducts({ id: id.value });
       await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
       await searchReviews({ productId: id.value });
     });
@@ -222,7 +256,7 @@ export default {
       reviewGetters,
       averageRating: computed(() => productGetters.getAverageRating(product.value)),
       totalReviews: computed(() => productGetters.getTotalReviews(product.value)),
-      relatedProducts: computed(() => productGetters.getFiltered(relatedProducts.value, { master: true })),
+      relatedProducts: computed(() => [] /* TODO productGetters.getFiltered(relatedProducts.value, { master: true })*/),
       relatedLoading,
       options,
       qty,

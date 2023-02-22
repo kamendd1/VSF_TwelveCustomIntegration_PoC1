@@ -84,8 +84,8 @@
               :score-rating="productGetters.getAverageRating(product)"
               :show-add-to-cart-button="true"
               :is-in-wishlist="isInWishlist({ product })"
-              :is-added-to-cart="isInCart({ product })"
-              :link="localePath(`/p/${productGetters.getSlug(product)}/${productGetters.getSlug(product)}`)"
+              :is-added-to-cart="isInCart({ product })"              
+              :link="localePath(`/p/${productGetters.getId(product)}/${productGetters.getSlug(product)}`)"
               class="products__product-card"
               @click:wishlist="!isInWishlist({ product }) ? addItemToWishlist({ product }): removeProductFromWishlist(product)"
               @click:add-to-cart="addToCart({ product, quantity: 1 })" />
@@ -217,10 +217,8 @@
         removeItemFromWishlist({ product });
       };
 
-      const addToCart = ({ product, quantity }) => {
-        debugger;
+      const addToCart = ({ product, quantity }) => {        
         const { id, sku } = product;
-
         addItemToCart({ product: { id, sku }, quantity });
       };
 

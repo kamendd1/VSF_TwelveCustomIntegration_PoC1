@@ -14,7 +14,7 @@ import { Product } from "../types";
  * - params - parameters passed from composable.
  */
 export async function fetchProducts(context, params): Promise<Product[]> {
-    console.info('%c Entering:  api.fetchProducts(params)', 'background-color:black;color:yellow');
+    console.info('%c Entering:  api.fetchProducts(params)', 'background-color:black;color:yellow; font-weight:bold');
     console.info('PARAMS.input:', params.input);
     console.info('PARAMS.data:', params.data && params.data.length ? `${params.data.length} items` : 'null-or-empty');
 

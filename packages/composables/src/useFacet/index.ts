@@ -14,7 +14,7 @@ const factoryParams = {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     search: async (context: Context, params: FacetSearchResult<SearchParams>): Promise<SearchParams> => {        
-        console.info(`%c Entering: useFacet.search, with params: `, 'color:blue', params.input);
+        console.info(`%c Entering: useFacet.search, with params: `, 'color:blue; font-weight:bold', params.input);
         console.info('%c   calling:  context.$vsftwelvepoc1.api.fetchProducts(params)', 'color:blue');                
 
         //TODO: is fetching from api okay? 

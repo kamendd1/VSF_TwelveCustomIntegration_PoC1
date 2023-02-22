@@ -26,9 +26,7 @@ function getPrice(product: Product): AgnosticPrice {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getGallery(product: Product): AgnosticMediaGalleryItem[] {
-    if (!product)
-        debugger;
-
+    
     return [
         {
             small: product.imgUrl,
@@ -45,10 +43,21 @@ function getCoverImage(product: Product): string {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getFiltered(products: Product[], filters: ProductFilter): any[] {
-    console.info('%c productGetters.getFiltered...', 'color:green', filters);
-    
-    //const productsFiltered = products.filter(p => p.id)
-    return products.slice(0, 1);
+    console.info(`%c Entering productGetters.getFiltered. Inbound products count: ${products?.length} `, 'color:green; font-weight:bold', filters);
+
+    let filteredProducts: Product[];
+
+    if (filters?.attributes?.params?.id) {
+        console.info(`%c       Filtering on id = ${filters?.attributes?.params?.id} `, 'color:green');
+        filteredProducts = products.filter(p => p.id === filters?.attributes?.params?.id)
+    }
+    else {
+        console.warn(`%c       DUMMY FILTERING`, 'color:green'); // TODO: remove
+        filteredProducts = products.slice(0, 1);
+    }
+
+    console.info(`%c      Outbound filteredProducts count: ${filteredProducts?.length} `, 'color:green');
+    return filteredProducts;
 
     //return [
     //    {

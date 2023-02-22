@@ -30,9 +30,8 @@ export type Product = {
 export type ProductFilter = TODO2;
 
 
-export type Cart = TODO;
-
-export type CartItem = TODO;
+export type Cart = TODO2;
+export type CartItem = TODO2;
 
 export type Wishlist = TODO2;
 export type WishlistItem = TODO2;

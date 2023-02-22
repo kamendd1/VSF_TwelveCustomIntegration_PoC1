@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { Category } from "../types";
 
 export async function fetchCategories(context, params): Promise<Category[]> {
-    console.info('%c Entering:  api.fetchCategories(params)', 'background-color:black;color:yellow');
+    console.info('%c Entering:  api.fetchCategories(params)', 'background-color:black;color:yellow; font-weight:bold');
     console.info('PARAMS.input:', params.input);
     console.info('PARAMS.data:', params.data && params.data.length ? `${params.data.length} items` : 'null-or-empty');
 

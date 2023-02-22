@@ -9,7 +9,7 @@ const factoryParams: UseCategoryFactoryParams<Category, SearchParams> = {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     categorySearch: async (context: Context, { customQuery, ...params }) => {
-        console.info(`%c Entering: useCategory.categorySearch with params`, 'color:blue', params);          
+        console.info(`%c Entering: useCategory.categorySearch with params`, 'color:blue; font-weight:bold', params);          
      
         console.info('%c   calling:  context.$vsftwelvepoc1.api.fetchCategories(params)', 'color:blue');
         const categories = await context.$vsftwelvepoc1.api.fetchCategories(params);

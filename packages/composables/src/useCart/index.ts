@@ -1,23 +1,27 @@
 import { Context, useCartFactory, UseCartFactoryParams } from '@vue-storefront/core';
 import type { Cart, CartItem, Product } from '@vue-storefront/vsftwelvepoc1-api';
 
+const inMemoryTmpCart = { foo:'bar'};
+
 const params: UseCartFactoryParams<Cart, CartItem, Product> = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     load: async (context: Context, { customQuery }) => {
-        console.log('Mocked: useCart.load');
-        return {};
+        console.info(`%c Entering: useCart.load`, 'color:blue; font-weight:bold', inMemoryTmpCart); 
+        return inMemoryTmpCart;
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-        console.log('Mocked: useCart.addItem');
-        return {};
+        debugger;
+        console.info(`%c Entering: useCart.addItem`, 'color:blue; font-weight:bold', currentCart); 
+        return inMemoryTmpCart;
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeItem: async (context: Context, { currentCart, product, customQuery }) => {
-        console.log('Mocked: useCart.removeItem');
-        return {};
+        debugger;
+        console.info(`%c Entering: useCart.removeItem`, 'color:blue; font-weight:bold', currentCart);
+        return "";
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
