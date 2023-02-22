@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import { Product } from "../types";
 
 /**
  * This function has two arguments (https://docs.vuestorefront.io/v2/integrate/integration-guide.html#implement-getproduct-endpoint)
@@ -12,28 +13,31 @@ import { AxiosError } from "axios";
  *     extendQuery - helper function for handling custom queries (used only with GraphQL).
  * - params - parameters passed from composable.
  */
-export async function fetchProducts(context, params) {
-    console.log('%ccalling:  context.$vsftwelvepoc1.api.fetchProducts(params)', 'background-color:black;color:yellow', params);
+export async function fetchProducts(context, params): Promise<Product[]> {
+    console.info('%c Entering:  api.fetchProducts(params)', 'background-color:black;color:yellow');
+    console.info('PARAMS.input:', params.input);
+    console.info('PARAMS.data:', params.data && params.data.length ? `${params.data.length} items` : 'null-or-empty');
+
+    //tenant-id header: see index.server.ts
 
     //TODO: let backend resolve this from frontend uri origin
-    const shopId = '0d8ce85c-29ba-47ee-a854-4069d57ddcce';
-
-    const productsUrlPath = `/shopserviceapi/products/${shopId}`;
+    const shopId = '1e9267df-0fca-4c6c-b29f-1a9f2d1c3087';
 
     //TODO: read assetsBaseUrl from a call to: /shopserviceapi/blobStorageConnectionInfo/<shopId>
-    const assetsBaseUrl = `https://st0asf0shopsvc0dev.blob.core.windows.net/${shopId}`;
+    const assetsBaseUrl = `https://st0asf0shopsvc0dev.blob.core.windows.net/assets-of-shop-${shopId}`;
 
     // Add parameters passed from composable as query strings to the URL
     // // params.id && url.searchParams.set('id', params.id);
     // // params.catId && url.searchParams.set('catId', params.catId);
     // // params.limit && url.searchParams.set('limit', params.limit);
-
-    // Use axios to send a GET request
+        
     try {
-        const { data } = await context.client.get(productsUrlPath);
+        const { data } = await context.client.get(`/shopserviceapi/products/${shopId}`);
+
+        console.info(`%c fetchProducts: api returned ${data.length} records`, 'color:blue');
 
         //for now, apply mapping. TODO: complete product model.
-        const products = data.map(item => {
+        const products: Product[] = data.map(item => {
             return {
                 id: item.id,
                 name: item.name,
@@ -42,13 +46,13 @@ export async function fetchProducts(context, params) {
                 imgUrl: `${assetsBaseUrl}/${item.defaultImagePath}`,
                 price: { regular: item.price.amount },
                 rating: { max: 5, score: 4 },
-                isInWishlist: true
+                isInWishlist: true,
+                categoryIds: item.productLabelIds
             }
         });
 
-        console.info(`%c fetchProducts: returns ${products.length} products`, 'color:blue', products);
-
-        return products
+        //console.info(`%c fetchProducts: returns ${products.length} products. First item:`, 'color:blue', products[0]);
+        return products;
 
     } catch (error) {
 

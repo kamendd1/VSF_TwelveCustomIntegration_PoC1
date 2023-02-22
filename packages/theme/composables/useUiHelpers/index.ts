@@ -1,60 +1,96 @@
+import { getCurrentInstance } from '@nuxtjs/composition-api';
+import { AgnosticFacet } from '@vue-storefront/core';
+import { UseFacetSearchParams } from '@vue-storefront/vsftwelvepoc1';
+import { Category } from '@vue-storefront/vsftwelvepoc1-api';
 
+const nonFilters = ['page', 'sort', 'term', 'itemsPerPage'];
+
+const getContext = () => {
+  const vm = getCurrentInstance();
+  return vm.root.proxy;
+};
+
+const reduceFilters = (query) => (prev, curr) => {
+  const makeArray = Array.isArray(query[curr]) || nonFilters.includes(curr);
+
+  return {
+    ...prev,
+    [curr]: makeArray ? query[curr] : [query[curr]]
+  };
+};
+
+const getFiltersDataFromUrl = (context, onlyFilters) => {
+  const { query } = context.$router.history.current;
+
+  return Object.keys(query)
+    .filter(f => onlyFilters ? !nonFilters.includes(f) : nonFilters.includes(f))
+    .reduce(reduceFilters(query), {});
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const useUiHelpers = () => {
-  const getFacetsFromURL = () => {
-    console.warn('[VSF] please implement useUiHelpers.getFacets.');
+  const context = getContext();
+
+  const getFacetsFromURL = (): UseFacetSearchParams => {
+    const { query, params } = context.$router.currentRoute;
+    const categorySlug = Object.keys(params).reduce((prev, curr) => params[curr] || prev, params.slug_1);
 
     return {
-      categorySlug: null,
-      page: 1
-    } as any;
+      categorySlug,
+      rootCatSlug: params.slug_1,
+      term: query.term,
+      page: parseInt(query.page as string, 10) || 1,
+      itemsPerPage: parseInt(query.itemsPerPage as string, 12) || 20,
+      sort: query.sort || 'latest',
+      filters: getFiltersDataFromUrl(context, true),
+    };
   };
 
-  // eslint-disable-next-line
-  const getCatLink = (category): string => {
-    console.warn('[VSF] please implement useUiHelpers.getCatLink.');
-
-    return '/';
+  const getCatLink = (category: Category): string => {
+    return `/c/${category.slug}`;
   };
 
-  // eslint-disable-next-line
-  const changeSorting = (sort) => {
-    console.warn('[VSF] please implement useUiHelpers.changeSorting.');
-
-    return 'latest';
+  const changeSorting = (sort: string) => {
+    const { query } = context.$router.currentRoute
+    context.$router.push({ query: { ...query, sort } });
   };
 
-  // eslint-disable-next-line
-  const changeFilters = (filters) => {
-    console.warn('[VSF] please implement useUiHelpers.changeFilters.');
+  const changeFilters = (filters: any) => {
+    context.$router.push({
+      query: {
+        ...getFiltersDataFromUrl(context, false),
+        ...filters
+      }
+    });
   };
 
-  // eslint-disable-next-line
-  const changeItemsPerPage = (itemsPerPage) => {
-    console.warn('[VSF] please implement useUiHelpers.changeItemsPerPage.');
+  const changeItemsPerPage = (itemsPerPage: number) => {
+    context.$router.push({
+      query: {
+        ...getFiltersDataFromUrl(context, false),
+        itemsPerPage
+      }
+    });
   };
 
-  // eslint-disable-next-line
-  const setTermForUrl = (term: string) => {
-    console.warn('[VSF] please implement useUiHelpers.changeSearchTerm.');
+  const changeSearchTerm = (term: string) => {
+    context.$router.push({
+      query: {
+        ...getFiltersDataFromUrl(context, false),
+        term: term || undefined
+      }
+    });
   };
 
-  // eslint-disable-next-line
-  const isFacetColor = (facet): boolean => {
-    console.warn('[VSF] please implement useUiHelpers.isFacetColor.');
+  const isFacetColor = (facet: AgnosticFacet): boolean => facet.id === 'color';
 
-    return false;
-  };
+  const isFacetCheckbox = (): boolean => false;
 
-  // eslint-disable-next-line
-  const isFacetCheckbox = (facet): boolean => {
-    console.warn('[VSF] please implement useUiHelpers.isFacetCheckbox.');
-
-    return false;
-  };
-
-  const getSearchTermFromUrl = () => {
-    console.warn('[VSF] please implement useUiHelpers.getSearchTermFromUrl.');
-  };
+  const formatDate = (date: string) => {
+    const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const toFormatDate = new Date(date);
+    return monthsArray[toFormatDate.getMonth()] + ' ' + toFormatDate.getDate() + ', ' + toFormatDate.getFullYear() + ' at ' + toFormatDate.getHours() + ':' + toFormatDate.getMinutes();
+  }
 
   return {
     getFacetsFromURL,
@@ -62,10 +98,10 @@ const useUiHelpers = () => {
     changeSorting,
     changeFilters,
     changeItemsPerPage,
-    setTermForUrl,
+    changeSearchTerm,
     isFacetColor,
     isFacetCheckbox,
-    getSearchTermFromUrl
+    formatDate
   };
 };
 

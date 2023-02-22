@@ -1,8 +1,9 @@
 import { apiClientFactory } from '@vue-storefront/core';
-import type { Setttings, Endpoints } from './types';
+import type { Setttings, Endpoints, Product } from './types';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { fetchProducts } from './api/fetchProducts';
+import { fetchCategories } from './api/fetchCategories';
 
 //Is called ONCE on the middleware setup. You can use it to set up the GraphQL or axios client instance.
 //It can return any result, and the server will merge it into the configuration object.
@@ -11,7 +12,7 @@ const init = (settings: Setttings) => {
     let config: AxiosRequestConfig = {
         baseURL: settings.apiConfig.baseUrl,
         headers: {
-            'tenant-id': '0d8ce85c-29ba-47ee-a854-4069d57ddcce' //TODO: let backend infer this from shop domain origin.
+            'tenant-id': '160a8343-3f1e-457d-8bc3-00cd15e5c967' //TODO: let backend infer this from shop domain origin.
         }
     };
     const client = axios.create(config);
@@ -43,7 +44,8 @@ const { createApiClient } = apiClientFactory<Setttings, Endpoints>({
     onCreate,
     //add every apihandler here
     api: {
-        fetchProducts
+        fetchProducts /*: Promise<Product[]> */,
+        fetchCategories 
     }
 });
 

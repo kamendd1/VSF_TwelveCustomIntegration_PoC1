@@ -26,6 +26,9 @@ function getPrice(product: Product): AgnosticPrice {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getGallery(product: Product): AgnosticMediaGalleryItem[] {
+    if (!product)
+        debugger;
+
     return [
         {
             small: product.imgUrl,
