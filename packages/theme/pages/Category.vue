@@ -217,9 +217,8 @@
         removeItemFromWishlist({ product });
       };
 
-      const addToCart = ({ product, quantity }) => {        
-        const { id, sku } = product;
-        addItemToCart({ product: { id, sku }, quantity });
+      const addToCart = ({ product, quantity }) => {                
+        addItemToCart({ product, quantity });
       };
 
       onSSR(async () => {
