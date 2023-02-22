@@ -16,7 +16,7 @@
       <CategoryPageHeader :pagination="pagination" />
     </div>
 
-    <div class="main section" style="border: solid 2px fuchsia">
+    <div class="main section">
       <div class="sidebar desktop-only">
         <LazyHydrate when-idle>
           <SfLoader
@@ -64,7 +64,7 @@
       </div>
 
       <SfLoader :class="{ loading }" :loading="loading">
-        <div class="products" v-if="!loading" style="background-color: fuchsia">
+        <div class="products" v-if="!loading">
           <transition-group
             v-if="isCategoryGridView"
             appear
